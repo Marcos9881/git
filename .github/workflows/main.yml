@@ -85,19 +85,7 @@ jobs:
             } catch (e) {
               core.warning(e);
             }
-
-  windows-build:
-    name: win build
-    needs: ci-config
-    if: needs.ci-config.outputs.enabled == 'yes'
-    runs-on: windows-latest
-    concurrency:
-      group: windows-build-${{ github.ref }}
-      cancel-in-progress: ${{ needs.ci-config.outputs.skip_concurrent == 'yes' }}
-    steps:
-    - uses: actions/checkout@v3
-    - uses: git-for-windows/setup-git-for-windows-sdk@v1
-    - name: build
+st   - name: build
       shell: bash
       env:
         HOME: ${{runner.workspace}}
@@ -115,7 +103,7 @@ jobs:
     runs-on: windows-latest
     needs: [ci-config, windows-build]
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         nr: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     concurrency:
@@ -201,10 +189,10 @@ jobs:
         path: artifacts
   vs-test:
     name: win+VS test
-    runs-on: windows-latest
+    runs-on: Android 
     needs: [ci-config, vs-build]
     strategy:
-      fail-fast: false
+      fail-fast:true
       matrix:
         nr: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     concurrency:
